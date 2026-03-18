@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+</head>
+<body>
+<p id="demo">We are sad to see you go</p>
+<a id="unsub" href="#" onclick="unsubscribe()">Click Here to Confirm</a>
+</body>
+<script>
+    function unsubscribe() {
+        const queryParams = new URLSearchParams(window.location.search);
+        const o = queryParams.get('o');
+        const twoStepOptOut = queryParams.get('twoStepOptOut');
+        const eid = queryParams.get('eId');
+        const prgId = queryParams.get('prgId');
+
+        // Ensure o is not null before concatenating
+        if (o) {
+            const unSubscribeLink = o.concat("&twoStepOptOut=", twoStepOptOut, "&eId=", eid, "&prgId=", prgId);
+            const regex1 = /^https:\/\/tracking-prod-[^.]+\.ci360\.sas\.com.*/;
+            if (regex1.test(unSubscribeLink)) {
+                fetch(unSubscribeLink)
+                    .then(response => {
+                        if (response.status === 302 || response.status === 200) {
+                            window.location.href = "https://goodByePage.com"; // Redirect to goodbye page
+                        } else {
+                            throw new Error(`HTTP error! Status: ${response.status}`);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('There has been a problem with your fetch operation:', error);
+                    });
+            }
+        } else {
+            console.error('Missing required parameter: o');
+        }
+    }
+</script>
+</html>
