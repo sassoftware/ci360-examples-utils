@@ -3,37 +3,58 @@
 <head>
 </head>
 <body>
-<p id="demo">We are sad to see you go</p>
-<a id="unsub" href="#" onclick="unsubscribe()">Click Here to Confirm</a>
+
+<!-- STEP 1: Shown on first visit — user confirms opt-out -->
+<div id="confirmation-content" style="display:none;">
+    <p>We are sad to see you go</p>
+    <a href="#" onclick="confirmOptOut(); return false;">Click Here to Confirm</a>
+</div>
+
+<!-- STEP 2: Shown after CI 360 processes the opt-out and redirects back with ?confirmedOptOut=true -->
+<div id="goodbye-content" style="display:none;">
+    <p>You have been successfully unsubscribed.</p>
+</div>
+
 </body>
 <script>
-    function unsubscribe() {
-        const queryParams = new URLSearchParams(window.location.search);
-        const o = queryParams.get('o');
-        const twoStepOptOut = queryParams.get('twoStepOptOut');
-        const eid = queryParams.get('eId');
-        const prgId = queryParams.get('prgId');
+    /*
+     * Two-Step Opt-Out Flow:
+     *
+     * 1. Recipient clicks opt-out link in email.
+     * 2. CI 360 redirects to this page with the tracking URL in the "o" query parameter:
+     *      https://your-page.com?o=https://tracking-prod-...ci360.sas.com/tt?sc=xxx&twoStepOptOut=true&prgId=yyy
+     * 3. This page shows "Click Here to Confirm".
+     * 4. On confirm, full-page navigation to the "o" URL triggers the opt-out in CI 360.
+     * 5. CI 360 processes the opt-out and 302 redirects back to this same page with ?confirmedOptOut=true.
+     * 6. This page detects confirmedOptOut=true and shows "You have been successfully unsubscribed."
+     *
+     */
 
-        // Ensure o is not null before concatenating
-        if (o) {
-            const unSubscribeLink = o.concat("&twoStepOptOut=", twoStepOptOut, "&eId=", eid, "&prgId=", prgId);
-            const regex1 = /^https:\/\/tracking-prod-[^.]+\.ci360\.sas\.com.*/;
-            if (regex1.test(unSubscribeLink)) {
-                fetch(unSubscribeLink)
-                    .then(response => {
-                        if (response.status === 302 || response.status === 200) {
-                            window.location.href = "https://goodByePage.com"; // Redirect to goodbye page
-                        } else {
-                            throw new Error(`HTTP error! Status: ${response.status}`);
-                        }
-                    })
-                    .catch(error => {
-                        console.error('There has been a problem with your fetch operation:', error);
-                    });
-            }
+    var TRACKING_URL_PATTERN = /^https:\/\/tracking-prod-[^.]+\.ci360\.sas\.com/;
+    var params = new URLSearchParams(window.location.search);
+
+    if (params.get("confirmedOptOut") === "true") {
+        show("goodbye-content");
+    } else {
+        show("confirmation-content");
+    }
+
+    function confirmOptOut() {
+        // Everything after "o=" is the tracking URL (it contains its own "&" params, so we parse it from the raw query string)
+        var raw = window.location.search.substring(1);
+        var optOutUrl = raw.startsWith("o=") ? decodeURIComponent(raw.substring(2)) : null;
+
+        if (optOutUrl && TRACKING_URL_PATTERN.test(optOutUrl)) {
+            // Full-page navigation (not AJAX/fetch) to avoid CORS and ad-blocker issues
+            window.location.replace(optOutUrl);
         } else {
-            console.error('Missing required parameter: o');
+            // Provide feedback if the opt-out URL is missing or invalid
+            alert("We were unable to process your unsubscribe request because the link is invalid or missing. Please try again later.");
         }
+    }
+
+    function show(id) {
+        document.getElementById(id).style.display = "block";
     }
 </script>
 </html>
