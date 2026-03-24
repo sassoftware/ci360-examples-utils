@@ -15,7 +15,7 @@ Open the HTML file and review the JavaScript code. When the customer clicks the 
 1. The JavaScript code populates the required variables from the query parameters in the initial URL. For more information
    about the query parameters, see [Two-Step Opt-Out with Customer-Branded Pages](https://documentation.sas.com/?cdcId=cintcdc&cdcVersion=production.a&docsetId=cintag&docsetTarget=p1k23bj83g45ukn1h4jxg3xno999.htm#p0ado9e2zfnlamn13d51twbeden6).
 2. An opt-out request is sent to SAS Customer Intelligence 360.
-3. The customer is directed to a goodbye page. In the sample code, this URL is `https://goodByePage.com`.
+3. The customer is directed to a goodbye page or the page is changed to display this content.
 
 ## Additional Resources
 
