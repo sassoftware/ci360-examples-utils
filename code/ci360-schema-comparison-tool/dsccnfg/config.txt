@@ -1,0 +1,7 @@
+# SAS CI 360 Download Configuration
+# Fill in your values from the CI360 GUI (General > Agents)
+
+agentName = ci360_agent
+tenantId  = abc123-ci360-tenant-id-xyz
+secret    = ABC123ci360clientSecretXYZ
+baseUrl   = https://extapigwservice-<server>/marketingGateway/discoverService/dataDownload/eventData/
