@@ -1,4 +1,4 @@
-# Schema Comparison Tool for SAS Customer Intelligence 360
+# Schema Comparison for SAS Customer Intelligence 360
 
 This script downloads the JSON schema files for the Unified Data Model (UDM) and generates
 a list of differences between the schemas.

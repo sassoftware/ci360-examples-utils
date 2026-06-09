@@ -64,8 +64,11 @@ Organize troubleshooting information using subtopics, as appropriate.
 
 ## List of Scripts and Utilities
 
+* [ci360-email-twostep-optout](code/ci360-email-twostep-optout): JavaScript example of how you can configure the two-stop opt-out
+   solution for email tasks.
 * [ci360-json-web-token](code/ci360-json-web-token): Python script that simplies creating a JSON Web Token (JWT). JWTs are used to authorize
   users with REST APIs in SAS Customer Intelligence 360.
+* [ci360-schema-comparison](code/ci360-schema-comparison/): Python script that compares versions of the schemas for the Unified Data Model (UDM).
 
 ## Contributing
 
